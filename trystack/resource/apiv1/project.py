@@ -8,7 +8,6 @@ class ProjectRsource(Resource):
         else:
             return ProjectController.get_project(project_id)    
 
-
     def post(self):
         return ProjectController.create_project()
 

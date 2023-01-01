@@ -1,5 +1,6 @@
 from trystack.trystack import apiv1 as api
 from .project import ProjectRsource
+from .user import UserResource
 
 api.add_resource(
     ProjectRsource,
@@ -14,3 +15,20 @@ api.add_resource(
     methods=["GET", "PATCH", "DELETE"],
     endpoint="project"
 )
+
+auth_routes = ["/register", "/login"]
+api.add_resource(UserResource, *auth_routes)
+
+# api.add_resource(
+#     UserResource,
+#     "/register",
+#     methods=["POST"],
+#     endpoint="register"
+# )
+
+# api.add_resource(
+#     UserResource,
+#     "/login",
+#     methods=["POST"],
+#     endpoint="login"
+# )

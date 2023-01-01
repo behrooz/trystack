@@ -46,7 +46,7 @@ class ProjectController():
     def update_project(project_id):        
         project_schema = ProjectSchema(only=["status"])
         request_data = project_schema.load(request.get_json())
-        project = Project.query.get(project_id)        
+        project = Project.query.get(project_id)
         if project is None:
             return jsonify(status=404)
         project.status = request_data["status"]
@@ -61,7 +61,7 @@ class ProjectController():
         project = Project.query.get(project_id)
         if project is None:
             return jsonify(status=404)
-        db.session.delete(project)    
+        db.session.delete(project)
         db.session.commit()
         return jsonify(status=204)
         
