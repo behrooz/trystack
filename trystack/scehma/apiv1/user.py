@@ -16,3 +16,12 @@ class UserSchema(ma.SQLAlchemySchema):
     password = ma.auto_field(required=True, validate=validate.Length(8))
     registeredAt = ma.auto_field(dump_only=True)
     lastLogin = ma.auto_field(dump_only=True)
+
+class LoginSchema(ma.SQLAlchemySchema):
+    class Meta:        
+        load_instance = True
+        include_fk = True
+        model = User
+    
+    email = ma.auto_field(dump_only=True, required=True, validate =validate.Email(error="Not a valida email address"))
+    password = ma.auto_field(dump_only=True, required=True)    

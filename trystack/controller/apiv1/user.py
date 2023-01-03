@@ -2,9 +2,10 @@ from flask import request
 from trystack.util import jsonify
 from trystack.decorator import json_required
 from trystack.model import User
-from trystack.scehma.apiv1 import UserSchema
+from trystack.scehma.apiv1 import UserSchema, LoginSchema
 from trystack.trystack import db
-import hashlib
+import hashlib, json
+from marshmallow import INCLUDE
 
 class UserController():
 
@@ -44,7 +45,23 @@ class UserController():
         )
 
     @json_required
-    def login():
+    def login():        
+        login_schema = LoginSchema(only=["email","password"])
+        request_data = login_schema.load(request.get_json(),unknown=INCLUDE)        
+        user = User.query.filter_by(email=request_data.email).first()
+        if user is None:
+            return jsonify(
+                state= {"user":"username or password is invalid"},
+                status= 501
+            )
+        password = hashlib.md5(request_data.password.encode("utf-8")).hexdigest()
+        print(password)
+        print(user.password)
+        if password == user.password:
+            return jsonify(
+                state= {"login":"succeesfuly"},
+                status= 501
+            )
         return jsonify(
             {"login":"you are logedin"}
         )    
