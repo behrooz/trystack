@@ -57,8 +57,9 @@ class UserController():
         password = hashlib.md5(request_data.password.encode("utf-8")).hexdigest()
         if password == user.password:
             encoded_jwt = jwt.encode({"email":user.email}, "secret", algorithm="HS256")
-            r = redis.Redis()
-            r.set(user.email, encoded_jwt)
+
+            connection = redis.from_url(url="redis://192.168.2.65:6379")
+            connection.append(user.email,encoded_jwt)
 
             return jsonify(
                 state= {"token":encoded_jwt},
