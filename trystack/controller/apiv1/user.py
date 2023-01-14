@@ -2,8 +2,10 @@ from flask import request
 from trystack.util import jsonify
 from trystack.decorator import json_required
 from trystack.model import User
+from trystack.config import Config
 from trystack.scehma.apiv1 import UserSchema, LoginSchema
 from trystack.trystack import db
+from os import environ
 import hashlib, json, jwt,redis
 from marshmallow import INCLUDE
 
@@ -58,8 +60,9 @@ class UserController():
         if password == user.password:
             encoded_jwt = jwt.encode({"email":user.email}, "secret", algorithm="HS256")
 
-            connection = redis.from_url(url="redis://192.168.2.65:6379")
+            connection = redis.from_url(Config.CACHE_REDIS_HOST)
             connection.append(user.email,encoded_jwt)
+            connection.close()
 
             return jsonify(
                 state= {"token":encoded_jwt},
@@ -68,3 +71,24 @@ class UserController():
         return jsonify(
             {"login":"you are logedin"}
         )
+
+    @json_required    
+    def logout():
+        request_data = request.get_json()
+        jwt = request_data["token"]
+        email = request_data["email"]
+
+        connection = redis.from_url(Config.CACHE_REDIS_HOST,decode_responses='utf-8')        
+        cache_token = connection.get(email)
+        print(cache_token ,jwt)
+        if cache_token is not None and cache_token == jwt:
+            connection.delete(email)
+            return jsonify(
+                state= {"logout": "successfully logout"}
+            )
+
+        return jsonify(
+            state= {"error": "token is not valid"}
+        )
+
+        #print(jwt,email)

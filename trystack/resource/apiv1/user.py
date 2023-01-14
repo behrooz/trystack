@@ -10,6 +10,8 @@ class UserResource(Resource):
             return self.login()
         elif "register" in url:
             return self.register()
+        elif "logout" in url:
+            return self.logout()
 
     def patch(self):
         pass
@@ -21,3 +23,6 @@ class UserResource(Resource):
 
     def login(self):
         return UserController.login()
+
+    def logout(self):
+        return UserController.logout()

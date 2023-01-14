@@ -13,10 +13,9 @@ class Config:
      SQLALCHEMY_ECHO = DEBUG
 
      CACHE_TYPE = environ.get("CACHE_TYPE")
-     CACHE_REDIS_HOST = environ.get("CACHE_REDIS_HOST")
-     CACHE_REDIS_PORT = environ.get("CACHE_REDIS_PORT")
+     CACHE_REDIS_HOST = environ.get("CACHE_REDIS_HOST","redis://192.168.2.65:6379")
+     CACHE_REDIS_PORT = environ.get("CACHE_REDIS_PORT","6379")
      CACHE_REDIS_DB  = environ.get("CACHE_REDIS_DB")
      CACHE_REDIS_URL = environ.get("CACHE_REDIS_URL")
      CACHE_DEFAULT_TIMEOUT = environ.get("CACHE_DEFAULT_TIMEOUT")
 
-     

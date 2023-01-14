@@ -16,7 +16,7 @@ api.add_resource(
     endpoint="project"
 )
 
-auth_routes = ["/register", "/login"]
+auth_routes = ["/register", "/login", "/logout"]
 api.add_resource(UserResource, *auth_routes)
 
 # api.add_resource(
