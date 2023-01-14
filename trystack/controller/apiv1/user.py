@@ -4,7 +4,7 @@ from trystack.decorator import json_required
 from trystack.model import User
 from trystack.scehma.apiv1 import UserSchema, LoginSchema
 from trystack.trystack import db
-import hashlib, json
+import hashlib, json, jwt,redis
 from marshmallow import INCLUDE
 
 class UserController():
@@ -47,7 +47,7 @@ class UserController():
     @json_required
     def login():        
         login_schema = LoginSchema(only=["email","password"])
-        request_data = login_schema.load(request.get_json(),unknown=INCLUDE)        
+        request_data = login_schema.load(request.get_json(),unknown=INCLUDE)
         user = User.query.filter_by(email=request_data.email).first()
         if user is None:
             return jsonify(
@@ -55,13 +55,15 @@ class UserController():
                 status= 501
             )
         password = hashlib.md5(request_data.password.encode("utf-8")).hexdigest()
-        print(password)
-        print(user.password)
         if password == user.password:
+            encoded_jwt = jwt.encode({"email":user.email}, "secret", algorithm="HS256")
+            r = redis.Redis()
+            r.set(user.email, encoded_jwt)
+
             return jsonify(
-                state= {"login":"succeesfuly"},
-                status= 501
+                state= {"token":encoded_jwt},
+                status= 200
             )
         return jsonify(
             {"login":"you are logedin"}
-        )    
+        )
