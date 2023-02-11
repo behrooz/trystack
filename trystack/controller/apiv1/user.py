@@ -60,14 +60,15 @@ class UserController():
         if password == user.password:
             encoded_jwt = jwt.encode({"email":user.email}, "secret", algorithm="HS256")
 
-            connection = redis.from_url(Config.CACHE_REDIS_HOST)
-            connection.append(user.email,encoded_jwt)
-            connection.close()
-
-            return jsonify(
+            try:
+              connection = redis.from_url(Config.CACHE_REDIS_HOST)
+              connection.append(user.email,encoded_jwt)
+              connection.close()
+            except:
+              return jsonify(
                 state= {"token":encoded_jwt},
                 status= 200
-            )
+              )
         return jsonify(
             {"login":"you are logedin"}
         )
@@ -75,20 +76,22 @@ class UserController():
     @json_required    
     def logout():
         request_data = request.get_json()
-        jwt = request_data["token"]
-        email = request_data["email"]
+        if "token" in request_data:
+            jwt = request_data["token"]
+            email = request_data["email"]
+            connection = redis.from_url(Config.CACHE_REDIS_HOST,decode_responses='utf-8')
+            cache_token = connection.get(email)
+            print(cache_token ,jwt)
+            if cache_token is not None and cache_token == jwt:
+                connection.delete(email)
+                return jsonify(
+                    state= {"logout": "successfully logout"}
+                )
 
-        connection = redis.from_url(Config.CACHE_REDIS_HOST,decode_responses='utf-8')        
-        cache_token = connection.get(email)
-        print(cache_token ,jwt)
-        if cache_token is not None and cache_token == jwt:
-            connection.delete(email)
             return jsonify(
-                state= {"logout": "successfully logout"}
+                state= {"error": "token is not valid"}
             )
-
         return jsonify(
-            state= {"error": "token is not valid"}
-        )
-
+                state = {"error": "token is not present"}
+            )
         #print(jwt,email)
