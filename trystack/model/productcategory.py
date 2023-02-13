@@ -5,3 +5,4 @@ class ProjectCategory(db.Model):
 
     id=db.Column(db.String(64), primary_key=True, default=uuidgen)
     category_id=db.Column(db.ForeignKey("category.id"))    
+    product_id=db.Column(db.ForeignKey("product.id"))
