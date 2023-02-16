@@ -6,3 +6,4 @@ from .product import Product
 from .producttag import ProductTag
 from .tag import Tag
 from .orderitem import OrderItem
+from .productmeta import ProductMeta

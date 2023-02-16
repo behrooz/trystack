@@ -19,3 +19,4 @@ class Product(db.Model):
     categories = db.relationship('ProductCategory', backref='Product')
     tags = db.relationship('ProductTag', backref='Product')
     orders=db.relationship('OrderItem', backref='Product')
+    metas=db.relationship('ProductMeta',backref='Product')
