@@ -30,7 +30,7 @@ spec:
   spec:
     containers:
       - name: trystack
-        image: trystack:latest
+        image: razzaghib/trystack:latest
         ports:
           - containerPort: 5000
 
