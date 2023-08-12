@@ -3,7 +3,7 @@ from kafka import KafkaConsumer
 def consumer():
   consumer = KafkaConsumer('my-topic',
                          group_id='my-group',
-                         bootstrap_server=['localhost:9200'])
+                         bootstrap_server=['localhost:9092'])
 
   for message in consumer:
       print("%s:%d:%d: key=%s value=%s" % (
