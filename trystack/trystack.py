@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from .config import Config
 from flask_marshmallow import Marshmallow
+from .helpers import kafka_consumer
+from kafka import KafkaConsumer
 
 db = SQLAlchemy()
 mg = Migrate()
@@ -26,4 +28,7 @@ def create_app(config_file=None):
     mg.init_app(app,db)
 
     app.register_blueprint(apiv1_bp)
+
+    consumer = KafkaConsumer()
+
     return app
