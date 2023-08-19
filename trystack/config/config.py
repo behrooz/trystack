@@ -18,4 +18,3 @@ class Config:
      CACHE_REDIS_DB  = environ.get("CACHE_REDIS_DB")
      CACHE_REDIS_URL = environ.get("CACHE_REDIS_URL")
      CACHE_DEFAULT_TIMEOUT = environ.get("CACHE_DEFAULT_TIMEOUT")
-

@@ -62,6 +62,7 @@ class UserController():
 
             try:
               connection = redis.from_url(Config.CACHE_REDIS_HOST)
+              connection.delete(user.email)
               connection.append(user.email,encoded_jwt)
               connection.close()
             except:
@@ -70,7 +71,7 @@ class UserController():
                 status= 200
               )
         return jsonify(
-            {"login":"you are logedin"}
+            {"token": encoded_jwt}
         )
 
     @json_required    
@@ -79,9 +80,8 @@ class UserController():
         if "token" in request_data:
             jwt = request_data["token"]
             email = request_data["email"]
-            connection = redis.from_url(Config.CACHE_REDIS_HOST,decode_responses='utf-8')
-            cache_token = connection.get(email)
-            print(cache_token ,jwt)
+            connection = redis.from_url(Config.CACHE_REDIS_HOST,decode_responses='utf-8')            
+            cache_token = connection.get(email)        
             if cache_token is not None and cache_token == jwt:
                 connection.delete(email)
                 return jsonify(
